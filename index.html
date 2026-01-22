@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteAvatar browser version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .file-input:hover {
+            background: #f0f0ff;
+            border-color: #764ba2;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .status.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .video-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        video {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .info-box strong {
+            color: #856404;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .lang-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-switcher">
+            <button class="lang-btn active" id="langZh" data-lang="zh">中文</button>
+            <button class="lang-btn" id="langEn" data-lang="en">English</button>
+        </div>
+        <h1 data-i18n="title">🎭 LiteAvatar - WASM加速版</h1>
+        <p class="subtitle" data-i18n="subtitle">浏览器版音频到面部动画生成</p>
+
+        <div class="info-box">
+            <strong data-i18n="infoTitle">⚠️ 使用说明：</strong>
+            <ul style="margin: 10px 0 0 20px;">
+                <li data-i18n="info1">使用 WASM 后端进行推理（兼容性更好）</li>
+                <li data-i18n="info2">首次使用需要下载模型文件（约 100-200MB）</li>
+                <li data-i18n="info3">建议使用 16kHz 采样率的 WAV 格式音频</li>
+                <li data-i18n="info4">处理时间取决于音频长度和设备性能</li>
+            </ul>
+        </div>
+
+        <div class="upload-section">
+            <h2 data-i18n="section0">0. 预加载模型（可选）</h2>
+            <p style="margin-bottom: 10px; color: #666;" data-i18n="preloadDesc">提前加载模型可以加快后续生成速度</p>
+            <button class="button" id="preloadModelsBtn" data-i18n="preloadBtn">📦 预加载模型</button>
+            <div id="preloadStatus" class="status hidden"></div>
+        </div>
+
+        <div class="upload-section">
+            <h2 data-i18n="section1">1. 上传音频文件</h2>
+            <div class="file-input-wrapper">
+                <div class="file-input" id="fileInputLabel">
+                    <span id="fileInputText" data-i18n="audioInputText">点击或拖拽音频文件到这里</span>
+                </div>
+                <input type="file" id="audioFile" accept="audio/*">
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="button" id="useDefaultAudio" data-i18n="useDefaultAudio">使用默认示例音频</button>
+                <button class="button" id="recordAudioBtn" data-i18n="recordAudio">🎤 使用麦克风录音</button>
+                <button class="button" id="stopRecordBtn" style="display: none; background: #f44336;" data-i18n="stopRecord">⏹️ 停止录音</button>
+            </div>
+            <div id="recordingStatus" class="status hidden"></div>
+            <div id="audioInfo" class="status hidden"></div>
+        </div>
+
+        <div class="upload-section">
+            <h2 data-i18n="section2">2. 加载 Avatar 数据</h2>
+            <div class="file-input-wrapper">
+                <div class="file-input" id="dataInputLabel">
+                    <span id="dataInputText" data-i18n="dataInputText">点击选择 Avatar 数据目录（或使用默认数据）</span>
+                </div>
+                <input type="file" id="avatarData" webkitdirectory directory multiple>
+            </div>
+            <button class="button" id="useDefaultData" data-i18n="useDefaultData">使用默认示例数据</button>
+            <div id="avatarDataInfo" class="status hidden"></div>
+        </div>
+
+        <div class="upload-section">
+            <h2 data-i18n="section3">3. 生成视频</h2>
+            <button class="button" id="generateBtn" disabled data-i18n="generateBtn">请先上传音频文件和 Avatar 数据</button>
+            <div id="status" class="status hidden"></div>
+            <div class="progress-bar hidden" id="progressBar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+
+        <div class="video-container">
+            <h2 data-i18n="section4">生成的视频</h2>
+            <video id="outputVideo" controls class="hidden"></video>
+            <a id="downloadLink" class="button hidden" download="lite_avatar_output.mp4" data-i18n="downloadVideo">下载视频</a>
+        </div>
+    </div>
+
+    <!-- ONNX Runtime Web -->
+    <!-- IMPORTANT:
+         `ort.min.js` is WASM-only in many releases and may NOT include WebGPU EP.
+         Use `ort.all.min.js` to get WebGPU + WASM in one bundle. -->
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.all.min.js"></script>
+    
+    <!-- 配置文件 -->
+    <script type="module" src="js/config.js"></script>
+    
+    <!-- Paraformer 前端特征提取模块 -->
+    <script type="module" src="js/paraformer-frontend.js"></script>
+    
+    <!-- 语言切换脚本 -->
+    <script src="js/i18n.js"></script>
+    
+    <!-- 主应用脚本 -->
+    <script type="module" src="js/lite-avatar-web.js"></script>
+</body>
+</html>
+

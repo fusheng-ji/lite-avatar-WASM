@@ -1,19 +1,26 @@
 # LiteAvatar - Browser Version
 
-A lightweight audio-driven 2D avatar solution that runs **entirely in the browser** using WebGPU/WASM. No backend server required.
+<div align="center">
+  <img src="assets/banner.svg" alt="LiteAvatar Banner" width="100%">
+</div>
 
-> **Note**: This project is a browser-optimized fork of [HumanAIGC/lite-avatar](https://github.com/HumanAIGC/lite-avatar). The original project requires Python backend and GPU acceleration. This version solves the problem of running LiteAvatar entirely in the browser without any backend dependencies.
+A browser-based implementation of LiteAvatar using WASM. No backend server required.
 
-## Highlights & Architecture
+This project adapts [HumanAIGC/lite-avatar](https://github.com/HumanAIGC/lite-avatar) for browser deployment. The original project requires Python backend and GPU acceleration, while this version runs entirely in the browser.
 
-- **100% Frontend**: All processing runs in the browser using ONNX Runtime Web (WebGPU/WASM)
-- **Full Frontend Feature Extraction**: Complete Paraformer feature extraction pipeline in browser (fbank + LFR + CMVN), using `weights/paraformer_hidden.onnx` (603MB FP32)
-- **Static Hosting**: Can be deployed to GitHub Pages, CDN, or any static hosting service
-- **No Backend Required**: Completely self-contained, no server-side dependencies
+⚠️ **Note**: Model performance may not be optimal as the models are not fine-tuned or retrained. This project serves as a reference implementation for browser deployment.
+
+## Features
+
+- Browser-based processing using ONNX Runtime Web (WASM)
+- Complete Paraformer feature extraction pipeline in browser (fbank + LFR + CMVN)
+- Large models (>100MB) hosted on Hugging Face to avoid Git LFS limitations
+- Static hosting support: GitHub Pages, Vercel, Netlify, etc.
+- No backend dependencies
 
 ## Models
 
-> Models are large (>100MB) and excluded from Git. You need to download them manually.
+Models are large (>100MB) and excluded from Git. Download them manually from the links below.
 
 ### Required Models
 
@@ -45,10 +52,20 @@ python -m http.server 8000
 
 ### Deploy to GitHub Pages
 
-1. Push your code to a GitHub repository
-2. Go to Settings → Pages
-3. Select your branch and `/ (root)` folder
-4. Your site will be available at `https://yourusername.github.io/repository-name`
+1. **Push code to GitHub**:
+   ```bash
+   git add .
+   git commit -m "Deploy to GitHub Pages"
+   git push origin main
+   ```
+
+2. **Enable GitHub Pages**:
+   - Go to: https://github.com/fusheng-ji/lite-avatar-WASM/settings/pages
+   - In the "Source" section, select: **GitHub Actions**
+   - Save settings
+
+3. **Access your site**:
+   - After deployment, visit: https://fusheng-ji.github.io/lite-avatar-WASM
 
 ### Deploy to Other Static Hosting
 
@@ -56,10 +73,10 @@ python -m http.server 8000
 - **Netlify**: Drag and drop your folder or connect via Git
 - **Cloudflare Pages**: Connect repository and set build command to `echo "No build needed"`
 
-## Frontend Usage
+## Usage
 
-1. Ensure all model files are available in the correct paths (or update paths in `js/config.js`)
-2. Open the page in your browser
+1. Place model files in the correct paths (or update paths in `js/config.js`)
+2. Open `index.html` in your browser
 3. Upload audio file (or use default sample audio / microphone recording)
 4. Upload avatar data (or use default sample data)
 5. Click "Generate Video" and wait for rendering
@@ -72,18 +89,33 @@ python -m http.server 8000
 ## Project Layout
 
 ```
-index.html                      # Main HTML file
-js/
-  ├── lite-avatar-web.js        # Main frontend logic
-  ├── paraformer-frontend.js    # Paraformer feature extraction (fbank + LFR + CMVN)
-  └── config.js                 # Configuration
-weights/
-  ├── paraformer_hidden.onnx   # Paraformer encoder (603MB)
-  └── model_1.onnx             # Audio2mouth model
-data/preload/
-  ├── net_encode.onnx          # Encoder model
-  ├── net_decode.onnx          # Decoder model
-  └── ...                      # Sample avatar data
+lite-avatar-WASM/
+├── index.html                  # Main HTML file
+├── assets/
+│   └── banner.svg             # Project banner
+├── js/
+│   ├── lite-avatar-web.js     # Main frontend logic
+│   ├── paraformer-frontend.js # Paraformer feature extraction (fbank + LFR + CMVN)
+│   ├── config.js              # Configuration
+│   └── i18n.js                # Internationalization
+├── weights/
+│   ├── paraformer_hidden.onnx # Paraformer encoder (603MB, download from Hugging Face)
+│   └── model_1.onnx            # Audio2mouth model (download from Hugging Face)
+├── data/
+│   └── preload/               # Sample avatar data
+│       ├── net_encode.onnx   # Encoder model
+│       ├── net_decode.onnx   # Decoder model
+│       ├── bg_video.mp4      # Background video
+│       ├── neutral_pose.npy  # Neutral pose data
+│       ├── face_box.txt      # Face bounding box
+│       └── ref_frames/       # Reference frames (150 jpg files)
+├── utils/
+│   ├── export_paraformer_hidden_onnx.py  # Export Paraformer to ONNX
+│   └── test_paraformer_onnx.py           # Test exported ONNX model
+├── extract_paraformer_feature.py        # Paraformer feature extraction utility
+├── funasr_local/              # FunASR local dependencies (for model export)
+├── requirements.txt           # Python dependencies
+└── README.md                  # This file
 ```
 
 ## Development
@@ -119,11 +151,7 @@ pip install torch onnxruntime funasr
    python export_paraformer_hidden_onnx.py
    ```
 
-   This script will:
-   - Load the Paraformer model from PyTorch format
-   - Wrap it with `ParaformerHiddenWrapperSingleInput` (from `extract_paraformer_feature.py`)
-   - Export only the encoder hidden states to ONNX format
-   - Save the model as `weights/paraformer_hidden.onnx`
+   The script loads the Paraformer model from PyTorch format, wraps it with `ParaformerHiddenWrapperSingleInput` (from `extract_paraformer_feature.py`), exports the encoder hidden states to ONNX format, and saves it as `weights/paraformer_hidden.onnx`.
 
 3. **Export Details**
 
@@ -142,11 +170,7 @@ pip install torch onnxruntime funasr
    python test_paraformer_onnx.py
    ```
 
-   This will:
-   - Load the ONNX model
-   - Display input/output shapes
-   - Run inference with dummy data
-   - Verify the model works correctly
+   This script loads the ONNX model, displays input/output shapes, runs inference with dummy data, and verifies the model works correctly.
 
 #### Important Notes
 
@@ -158,21 +182,20 @@ pip install torch onnxruntime funasr
 
 ## Browser Compatibility
 
-- **WebGPU**: Chrome/Edge 113+, Safari 18+ (experimental)
-- **WASM Fallback**: All modern browsers (Chrome, Firefox, Safari, Edge)
+- **WASM**: All modern browsers (Chrome, Firefox, Safari, Edge)
 - **Audio APIs**: Modern browsers with Web Audio API support
 
 ## Performance
 
 - **Feature Extraction**: ~1-2 seconds for 5 seconds of audio (depends on device)
-- **Video Generation**: ~5-10 seconds for 150 frames (depends on device and WebGPU availability)
+- **Video Generation**: ~5-10 seconds for 150 frames (depends on device)
 - **Memory Usage**: ~1-2GB RAM (mainly for model loading)
 
-## Thanks
+## Credits
 
-This project is based on [HumanAIGC/lite-avatar](https://github.com/HumanAIGC/lite-avatar), with modifications to enable browser-only execution.
+Based on [HumanAIGC/lite-avatar](https://github.com/HumanAIGC/lite-avatar), adapted for the browser.
 
-We are grateful for the following open-source projects:
+Thanks to these projects:
 
 - [LiteAvatar](https://github.com/HumanAIGC/lite-avatar) - Original real-time 2D chat avatar project
 - [Paraformer](https://modelscope.cn/models/iic/speech_paraformer-large_asr_nat-zh-cn-16k-common-vocab8404-pytorch) & [FunASR](https://github.com/modelscope/FunASR) - Audio feature extraction

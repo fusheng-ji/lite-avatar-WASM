@@ -26,7 +26,14 @@ const i18nTexts = {
         preloadLoading: '正在加载模型，请稍候...',
         preloadSuccess: '✓ 模型加载成功！现在可以开始生成视频了',
         preloadError: '❌ 模型加载失败',
-        preloadAlready: '✓ 模型已加载'
+        preloadAlready: '✓ 模型已加载',
+        citeLine1: '本项目基于',
+        citeLine2: '适配浏览器版本。',
+        citeLine2Thanks: '非常感谢原作者的贡献！',
+        citeLine3: '本项目同样遵守',
+        citeLine4: 'MIT 许可证',
+        citeLine3End: '。',
+        citeLine6: '项目仓库：'
     },
     en: {
         title: '🎭 LiteAvatar - WASM Accelerated',
@@ -54,7 +61,14 @@ const i18nTexts = {
         preloadLoading: 'Loading models, please wait...',
         preloadSuccess: '✓ Models loaded successfully! You can now generate videos',
         preloadError: '❌ Model loading failed',
-        preloadAlready: '✓ Models already loaded'
+        preloadAlready: '✓ Models already loaded',
+        citeLine1: 'This project is based on',
+        citeLine2: 'adapted for browser deployment.',
+        citeLine2Thanks: 'Many thanks to the original authors!',
+        citeLine3: 'This project also follows the',
+        citeLine4: 'MIT License',
+        citeLine3End: '.',
+        citeLine6: 'Repository:'
     }
 };
 

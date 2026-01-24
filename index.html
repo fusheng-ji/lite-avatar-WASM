@@ -93,6 +93,12 @@
             cursor: pointer;
             margin: 10px 5px;
             transition: transform 0.2s, box-shadow 0.2s;
+            height: 50px;
+            line-height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
 
         .button:hover:not(:disabled) {
@@ -186,6 +192,39 @@
             display: none;
         }
 
+        .top-links {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .home-link,
+        .github-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-link:hover,
+        .github-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
         .language-switcher {
             position: absolute;
             top: 20px;
@@ -219,10 +258,51 @@
         .container {
             position: relative;
         }
+
+        .footer-cite {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-cite a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-cite a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-cite .license {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="top-links">
+            <a href="https://fusheng-ji.github.io/" target="_blank" class="home-link" title="返回个人主页">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </a>
+            <a href="https://github.com/fusheng-ji/lite-avatar-WASM" target="_blank" class="github-link" title="GitHub 仓库">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+            </a>
+        </div>
         <div class="language-switcher">
             <button class="lang-btn active" id="langZh" data-lang="zh">中文</button>
             <button class="lang-btn" id="langEn" data-lang="en">English</button>
@@ -289,6 +369,25 @@
             <h2 data-i18n="section4">生成的视频</h2>
             <video id="outputVideo" controls class="hidden"></video>
             <a id="downloadLink" class="button hidden" download="lite_avatar_output.mp4" data-i18n="downloadVideo">下载视频</a>
+        </div>
+
+        <div class="footer-cite">
+            <p>
+                <span data-i18n="citeLine1">本项目基于</span> 
+                <a href="https://github.com/HumanAIGC/lite-avatar" target="_blank">HumanAIGC/lite-avatar</a> 
+                <span data-i18n="citeLine2">适配浏览器版本。</span>
+            </p>
+            <p>
+                <span data-i18n="citeLine2Thanks">非常感谢原作者的贡献！</span>
+            </p>
+            <p>
+                <span data-i18n="citeLine3">本项目同样遵守</span> 
+                <a href="https://github.com/HumanAIGC/lite-avatar/blob/main/LICENSE" target="_blank" data-i18n="citeLine4">MIT 许可证</a><span data-i18n="citeLine3End">。</span>
+            </p>
+            <p>
+                <span data-i18n="citeLine6">项目仓库：</span>
+                <a href="https://github.com/fusheng-ji/lite-avatar-WASM" target="_blank">https://github.com/fusheng-ji/lite-avatar-WASM</a>
+            </p>
         </div>
     </div>
 
